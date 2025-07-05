@@ -7,7 +7,20 @@ import {
   Login,
   DashboardLayout,
   Error,
+  AddJob,
+  Stats,
+  AllJobs,
+  Profile,
+  Admin,
 } from "./pages";
+
+export const initialIsDarkTheme = function () {
+  const currDarkTheme = localStorage.getItem("darkTheme") === "true";
+  document.body.classList.toggle("dark-theme", currDarkTheme);
+  return currDarkTheme;
+};
+
+initialIsDarkTheme();
 
 const router = createBrowserRouter([
   {
@@ -15,6 +28,10 @@ const router = createBrowserRouter([
     element: <HomeLayout />,
     errorElement: <Error />,
     children: [
+      {
+        index: true,
+        element: <Landing />,
+      },
       {
         path: "register",
         element: <Register />,
@@ -26,10 +43,28 @@ const router = createBrowserRouter([
       {
         path: "dashboard",
         element: <DashboardLayout />,
-      },
-      {
-        index: true,
-        element: <Landing />,
+        children: [
+          {
+            index: true,
+            element: <AddJob />,
+          },
+          {
+            path: "stats",
+            element: <Stats />,
+          },
+          {
+            path: "all-jobs",
+            element: <AllJobs />,
+          },
+          {
+            path: "profile",
+            element: <Profile />,
+          },
+          {
+            path: "admin",
+            element: <Admin />,
+          },
+        ],
       },
     ],
   },
