@@ -1,13 +1,15 @@
 import express from "express";
-import morgon from "morgan";
+import morgan from "morgan";
 import * as dotenv from "dotenv";
+import mongoose from "mongoose";
 
 import jobRouter from "./routes/jobRouter.js";
+import errorHandlerMiddleware from "./middleware/errorHandlerMiddleware.js";
 dotenv.config();
 const app = express();
 
 if (process.env.NODE_ENV === "development") {
-  app.use(morgon("dev"));
+  app.use(morgan("dev"));
 }
 
 app.use(express.json());
@@ -26,13 +28,16 @@ app.use("*", (req, res) => {
   res.status(404).json({ message: "Not Found" });
 });
 
-app.use((err, req, res, next) => {
-  console.log(err);
-  res.status(500).json({ message: "Something went wrong" });
-});
+app.use(errorHandlerMiddleware);
 
 const port = process.env.PORT || 5100;
 
-app.listen(port, () => {
-  console.log(`Server Running on PORT ${port}`);
-});
+try {
+  await mongoose.connect(process.env.MONGO_URL);
+  app.listen(port, () => {
+    console.log(`Server is running on ${port}...`);
+  });
+} catch (err) {
+  console.log(err);
+  process.exit(1);
+}
