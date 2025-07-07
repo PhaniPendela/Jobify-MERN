@@ -22,6 +22,7 @@ app.get("/", (req, res) => res.send("Hello World"));
 
 app.use("/api/v1/jobs", authenticateUser, jobRouter);
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/auth", authenticateUser);
 
 app.use("*", (req, res) => {
   res.status(404).json({ message: "Not Found" });
